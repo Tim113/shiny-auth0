@@ -28,6 +28,7 @@ router.get('/logout', function(req, res){
 router.get('/callback',
   passport.authenticate('auth0', { failureRedirect: '/login' }),
   function(req, res) {
+    localStorage.setItem(extraParams.id_token, 'asY-x34SfYPk'); // write
     res.redirect(req.session.returnTo || '/reports/');
   });
 
