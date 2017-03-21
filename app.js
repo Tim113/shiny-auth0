@@ -23,7 +23,7 @@ var strategy = new Auth0Strategy({
   }, function(accessToken, refreshToken, extraParams, profile, done) {
     // accessToken is the token to call Auth0 API (not needed in the most cases)
     // extraParams.id_token has the JSON Web Token
-    sessionStorage.setItem('token', 'TestToken); // write
+    token = extraParams.id_token
     // profile has all the information from the user
     return done(null, profile, extraParams);
   });
@@ -54,6 +54,23 @@ app.use(session({
 }));
 app.use(passport.initialize());
 app.use(passport.session());
+
+// set a cookie
+app.use(function (req, res, next) {
+
+  if (typeof token !== 'undefined')
+  {
+    res.cookie('JWT',token, { maxAge: 900000, httpOnly: true });
+    console.log('JWT cookie created successfully');
+    console.log(token)
+  } 
+  else
+  {
+    console.log('Nope');
+  } 
+  next(); // <-- important!
+});
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/reports/', reports);
